@@ -98,7 +98,6 @@ struct ContentView: View {
                     }
                     .padding(.trailing)
                 }
-                
             }
 //            .border(.blue)
             
