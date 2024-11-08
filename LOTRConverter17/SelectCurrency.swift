@@ -2,13 +2,14 @@
 //  SelectCurrency.swift
 //  LOTRConverter17
 //
-//  Created by mirabella  on 06/11/24.
+//  Created by mirabella on 06/11/24.
 //
 
 import SwiftUI
 
 struct SelectCurrency: View {
-        @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) var dismiss
+    @State var currency: Currency
     
     var body: some View {
         ZStack {
@@ -20,39 +21,51 @@ struct SelectCurrency: View {
             
             VStack {
                 // Text
-                Text("Select the currency you ate starting with:")
+                Text("Select the currency you are starting with:")
                     .fontWeight(.bold)
                 
                 // Currency icons
-                CurrencyIcon(currencyImage: .copperpenny, currencyName: "Copper Penny")
+                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
+                    ForEach(Currency.allCases) { currency in
+                        if self.currency == currency {
+                            CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
+                                .shadow(color: .black, radius: 10)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 25)
+                                        .stroke(lineWidth: 3)
+                                        .opacity(0.5)
+                                }
+                        } else {
+                            CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
+                                .onTapGesture {
+                                    self.currency = currency
+                                }
+                        }
+                    }
+                }
                 
                 // Text
                 Text("Select the currency you would like to convert to:")
                     .fontWeight(.bold)
                 
                 // Currency icons
-                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
-                    ForEach(Currency.allCases) { currency in
-                        CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
-                    }
-                }
+             
                 
                 // Done button
                 Button("Done") {
                     dismiss()
                 }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.brown)
-                    .font(.largeTitle)
-                    .padding()
-                    .foregroundStyle(.white)
+                .buttonStyle(.borderedProminent)
+                .tint(.brown)
+                .font(.largeTitle)
+                .padding()
+                .foregroundStyle(.white)
             }
-            .padding()
-            .multilineTextAlignment(.center)
         }
     }
 }
 
+// Preview
 #Preview {
-    SelectCurrency()
+    SelectCurrency(currency: .silverPiece)
 }
