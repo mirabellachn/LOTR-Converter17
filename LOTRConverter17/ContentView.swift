@@ -15,7 +15,6 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            // test commit
             // Background Image
             Image(.background)
                 .resizable()
