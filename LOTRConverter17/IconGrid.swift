@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct IconGrid: View {
-    @State var currency: Currency
+    @Binding var currency: Currency
 
     var body: some View {
         LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
@@ -25,7 +25,6 @@ struct IconGrid: View {
                     CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
                         .onTapGesture {
                             self.currency = currency
-                            print("IconGrid currency property: \(self.currency)")
                         }
                 }
             }
@@ -34,5 +33,5 @@ struct IconGrid: View {
 }
 
 #Preview {
-    IconGrid(currency: .silverPiece)
+    IconGrid(currency: .constant(.silverPiece))
 }
