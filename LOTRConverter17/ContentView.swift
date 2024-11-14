@@ -14,6 +14,9 @@ struct ContentView: View {
    @State var leftAmount = ""
    @State var rightAmount = ""
     
+    @FocusState var leftTyping
+    @FocusState var rightTyping
+    
     @State var leftCurrency: Currency = .silverPiece
     @State var rightCurrency: Currency = .goldPiece
     
@@ -49,7 +52,7 @@ struct ContentView: View {
                                 .scaledToFit()
                                 .frame(height: 33)
                             
-                            // Currency text
+                        // Currency text
                             Text(leftCurrency.name)
                                 .font(.headline)
                                 .foregroundStyle(.white)
@@ -63,6 +66,8 @@ struct ContentView: View {
                         // Text field
                         TextField("Amount", text: $leftAmount)
                             .textFieldStyle(.roundedBorder)
+                            .focused($leftTyping)
+                            .keyboardType(.decimalPad)
                     }
                     
                     // Equal sign
@@ -97,6 +102,7 @@ struct ContentView: View {
                         TextField("Amount", text: $rightAmount)
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
+                            .focused($rightTyping)
                     }
                 }
                 .padding()
@@ -110,8 +116,6 @@ struct ContentView: View {
                     Spacer()
                     Button {
                         showExchangeInfo.toggle()
-                        print("showExchangeInfo value: \(showExchangeInfo)")
-                        
                     } label: {
                         Image(systemName: "info.circle.fill")
                             .font(.largeTitle)
@@ -121,8 +125,25 @@ struct ContentView: View {
                     
                 }
             }
-//            .border(.blue)
+            // .border(.blue)
             
+        }
+        .onChange(of: leftAmount) {
+            if leftTyping == true {
+                rightAmount = leftCurrency.convert(leftAmount, to: rightCurrency)
+            }
+        }
+        .onChange(of: rightAmount) {
+            if rightTyping {
+                leftAmount = rightCurrency.convert(rightAmount, to: leftCurrency)
+            }
+        }
+        
+        .onChange(of: leftCurrency) {
+            leftAmount = rightCurrency.convert(rightAmount, to: leftCurrency)
+        }
+        .onChange(of: rightCurrency) {
+            rightAmount = leftCurrency.convert(leftAmount, to: rightCurrency)
         }
         .sheet(isPresented: $showExchangeInfo) {
             ExchangeInfo()
